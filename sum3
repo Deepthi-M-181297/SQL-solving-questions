@@ -85,15 +85,24 @@ select * from customers
 select * from products
 select * from sales
 --1.
+with cte1 as
+(	
+	select 
+		extract(month from s.sale_date) as month,
+		p.category,
+		avg(s.amount) as sale_amount,
+		dense_rank()over(partition by extract(month from s.sale_date) order by avg(s.amount) desc) as dnk
+	from sales s
+	join products p
+	on p.product_id = s.product_id
+	group by 1,2
+)
 select 
-	p.category,
-	avg(s.amount) as sale_amount
-from sales s
-join products p
-on p.product_id = s.product_id
-group by 1
-order by 2 desc
-limit 1
+	month,
+	category,
+	sale_amount
+from cte1
+where dnk = 1
 
 --2.
 select
