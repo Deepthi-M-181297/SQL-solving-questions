@@ -19,7 +19,9 @@ INSERT INTO employees (employee_id, salary) VALUES
 (8, 6000),
 (9, 7000);
 
-SELECT * FROM employees
+SELECT * FROM employees;
+
+--Dividing employees into buckets
 
 with cte1 as
 (
