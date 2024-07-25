@@ -34,3 +34,10 @@ select employee_id,salary,
 	 else 4
 end) as bucket
 from cte1
+
+--Method 2 (using ntile window function)
+
+select *,ntile(3)over(order by salary asc) as bucket from employees
+
+
+
