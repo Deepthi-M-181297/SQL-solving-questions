@@ -1,0 +1,64 @@
+drop table if exists products;
+drop table if exists sales;
+
+CREATE TABLE sales (
+order_id INT PRIMARY KEY,
+product_name varchar(20) NOT NULL,
+units_sold INT DEFAULT 0,
+unit_price FLOAT 
+);
+
+CREATE TABLE products (
+category varchar(20) NOT NULL,
+product_name varchar(20)
+);
+
+INSERT INTO sales VALUES
+(122,'Bikaji_namkeen',1500,200),
+(112,'Lays',10000,20),
+(110,'Amul_kool',2200,25),
+(138,'Dairy_milk',2000,149),
+(202,'Monaco',9000,50),
+(118,'Coke',7000,95),
+(104,'Appy_fizz',8000,35),
+(189,'KitKat',4500,70),
+(238,'Dosa_batter',3000,99),
+(199,'Munch',4500,80),
+(448,'Maggi',10000,168);
+
+INSERT INTO products VALUES
+('Snacks','Bikaji_namkeen'),
+('Snacks','Lays'),
+('Snacks','Monaco'),
+('Drinks','Amul_kool'),
+('Drinks','Coke'),
+('Drinks','Appy_fizz'),
+('Chocolates','KitKat'),
+('Chocolates','Munch'),
+('Chocolates','Dairy_milk'),
+('Instant_food','Dosa_batter'),
+('Instant_food','Maggi');
+
+select * from sales;
+select * from products;
+
+--Write sql query to find 2nd highest selling products( in terms of revenue)
+--for each product category, ordered by product name
+with cte1 as
+(
+	select 
+		p.category,
+		s.product_name,
+		sum(s.units_sold * s.unit_price) as total_revenue,
+		dense_rank()over(partition by p.category order by sum(s.units_sold * s.unit_price) desc) as dnk
+	from sales s
+	join products p
+	on p.product_name = s.product_name
+	group by 1,2
+)
+select 
+	category,
+	product_name,
+	total_revenue
+from cte1
+where dnk =2
