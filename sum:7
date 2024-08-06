@@ -1,0 +1,40 @@
+create table z
+(
+	product_id varchar(10),
+	defective varchar(10)
+)
+insert into z (product_id,defective)values
+('A','Yes'),
+('A','No'),
+('B','Yes'),
+('B','No'),
+('C','No'),
+('C','No'),
+('C','No');
+
+insert into z (product_id,defective)values
+('A','No'),
+('A','No');
+
+select * from z
+	
+with cte1 as
+(
+	select product_id,
+	count(case when defective = 'Yes' then 1 end) as defective_product,
+	count(case when defective ='No' then 1 end) as non_defective_product
+	from z
+	group by 1
+)
+select product_id
+from cte1
+where defective_product = 0 and non_defective_product >=2
+
+-----------------------------------------------------------------------------------	
+
+select 
+	product_id
+from z
+group by 1
+having count(case when defective = 'Yes' then 1 end) =0 and
+	count(case when defective ='No' then 1 end)>=2 
